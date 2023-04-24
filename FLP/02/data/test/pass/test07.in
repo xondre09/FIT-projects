@@ -1,0 +1,50 @@
+S a B R
+S b B R
+S   B R
+B a S a
+B b S b
+B   C  
+C a D L
+C b D L
+C   D L
+D a C b
+D b E a
+E a G L
+E b G L
+E   G L
+G a E a
+G b E b
+G   X R
+H a I R
+H b I R
+H   I R
+I a J a
+I b L b
+I   Z L
+J a K L
+J b K L
+J   K L
+K a O a
+K b O a
+K   O a
+L a M L
+L b M L
+L   M L
+M a O b
+M b O b
+M   O b
+O a H R
+O b H R
+O   H R
+X a H  
+X b Y b
+Y a U L
+Y b U L
+Y   U L
+U a Y a
+U b Y b
+U   F  
+Z a Y  
+Z b Y  
+Z   Y  
+ baaaaa

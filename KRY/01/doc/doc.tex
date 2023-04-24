@@ -1,0 +1,138 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[left=2cm, text={17cm, 24cm}, top=2.5cm]{geometry}
+\usepackage[czech]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{times}
+\usepackage{float}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\lstset{
+	language=bash,
+	basicstyle=\ttfamily
+}
+
+\usepackage{lastpage}
+
+\usepackage{multicol}
+
+\usepackage{tabularx}
+\newcounter{tab}
+\renewcommand*{\thetab}{(\arabic{tab})}
+
+\pagestyle{fancy}
+\setlength{\headheight}{28pt} 
+\fancyhf{}
+% jednostranná sazba
+\fancyhead[L]{
+	\begin{tabular}{lr}
+		Jméno: & Karel \textsc{Ondřej} \\
+		Login: & xondre09
+	\end{tabular}
+}
+\fancyhead[C]{
+	\begin{tabular}{c}
+		\textbf{Kryptografie (KRY)}\\
+		Projekt č. 1
+	\end{tabular}
+}
+\fancyhead[R]{
+	\begin{tabular}{lr}
+		Datum: & \today \\
+		Stránka: & \thepage/\pageref{LastPage}
+	\end{tabular}
+}
+
+\begin{document}
+\section{Kryptoanalýza}
+Prvním krokem analýzy je zjistit co nejvíce informací o použitém šifrovacím algoritmu. Jednotlivé zašifrované zprávy $A$, $B$ lze vyjádřit pomocí vztahů \ref{eq:EA} a \ref{eq:EB}, $E$ je zašifrovaná zpráva a $C(K)$ je proudový klíč generovaný tajným klíčem $K$.
+\begin{equation}\label{eq:EA}
+	E(A) = A \oplus C(K)
+\end{equation}
+\begin{equation}\label{eq:EB}
+	E(B) = B \oplus C(K)
+\end{equation}
+Dále můžeme využít vlastnosti operace exkluzivního součtu $\oplus$, která je komutativní a platí $X\oplus X = 0$:
+
+\begin{equation}\label{eq:EAEB}
+	E(A) \oplus E(B) = (A \oplus C(K)) \oplus (B \oplus C(K)) =  A \oplus B \oplus C(K) \oplus C(K) = A \oplus B\ .
+\end{equation}
+Jelikož známe obsah jedné ze zpráv, tak jednoduše dokážeme zjistit obsah druhé zprávy do délky známé zprá\-vy. 
+
+Předpokládejme tedy, že byly všechny soubory zašifrovány stejným klíčem. Po aplikování vztahu \ref{eq:EAEB} a~znalosti zprávy \texttt{bis.txt} lze dešifrovat obsah první části zpráv \texttt{super\_cipher.py} a \texttt{hint.gif}.
+
+Obrázek pravděpodobně může obsahovat dostatečně dlouhou posloupnost \uv{0}. Jelikož \uv{0} je neutrálním prvkem k operaci exkluzivního součtu $X\oplus 0 = 0 \oplus X = X$, tak po zašifrování souboru \texttt{hint.gif} se část zašifrovaného souboru \texttt{hint.gif.enc} stane klíčem $C(K)$, který lze použít k dešifrování další části souboru \texttt{super\_cipher.py.enc}. Po dešifrování části souboru \texttt{super\_cipher.py.enc} s použitím \texttt{hint.gif.enc} zbývá posledních 35 ne\-de\-šif\-rovaných bytů, které lze již snadno odhadnout.
+
+\subsection{Nalezení použité substituce}
+
+Po dešifrování přiloženého skriptu je potřeba ověřit, zda byl použit k zašifrování. To lze snadno ověřit tak, že vezmeme prvních 32 bytů $C(K)$ a zda dokážeme pomocí funkce \texttt{step} (viz výpis \ref{lst:step}) vygenerovat následujících 32 bytů $C(K)$. 
+
+\begin{lstlisting}[language=python, caption=Generování proudového klíče $C(K)$ ze souboru \texttt{super\_cipher.py}., frame=single, captionpos=b, label=lst:step]
+SUB = [0, 1, 1, 0, 0, 1, 0, 1]
+N_B = 32
+N = 8 * N_B
+# Next keystream
+def step(x):
+    x = (x & 1) << N+1 | x << 1 | x >> N-1
+    y = 0
+    for i in range(N):
+        y |= SUB[(x >> i) & 7] << i
+    return y
+\end{lstlisting}
+
+Výsledkem testu je zjištění, že daný skript nebyl použitý k zašifrování souborů. Dalším krokem je tedy vyzkoušet, zda nebyla použita jiná substituce \texttt{SUB}. Jelikož je pouze $2^8 = 256$ možných kombinací, tak není zapotřebí vyloučit nesmyslné kombinace a lze vyzkoušet všechny. Pro jednotlivé substituce se postupně aplikuje funkce \texttt{step} na prvních 32 bytů $C(K)$, až se nalezne použitá substituce \texttt{SUB = [0, 1, 1, 0, 1, 0, 1, 0]}. 
+
+Obě varianty řešení nejdříve získají klíč $C(K)$ ze souborů \texttt{bis.txt} a \texttt{bis.txt.enc} a následně naleznou použitou substituci. Na základě použité substituce se vytvoří inverzní funkce k generování proudového klíče $C(K)$, která se podle varianty řešení liší a je popsána v následujících kapitolách.
+
+\section{Získání tajného klíče}
+K funkci \texttt{step} lze sestrojit inverzní funkci, která získá předchozích 32 bytů $C(K)$. Proudový klíč $C(K)$ je inicializován $N/2$ aplikacemi funkce \texttt{step} na tajný klíč $K$. Po stejném počtu aplikací inverzní funkce na prvních 32 bytů $C(K)$ lze získat tajný klíč $K$. Následující kapitoly popisují inverzní funkce obou variant řešení.
+
+\subsection{Ruční řešení}
+
+Při ručním řešení se nejdříve sestrojí množiny $S_0$ a $S_1$ obsahující hodnoty, které byly při zašifrování substituovány za \uv{0} a \uv{1}. 
+Na vstupu mějme $N$ bitů proudového klíče $C(K)$, se kterým budeme pracovat jako s~řetězcem $d\in\{0, 1\}^N$. Značení $d_n$ odpovídá n-tému znaku zprava (indexováno od 0), neboli n-tému nejnižšímu bitu. 
+
+Mějme množinu všech doposud možných řešení $R$, inicializovanou jako $R_0 = \{0, 1\}^2$. 
+Volba těchto hodnot je zdůvodněna níže. 
+Postupně se iteruje přes jednotlivé symboly řetězce $d$, kde $i \in \mathbb{N} < N$ je pořadí iterace a $d_i \in \{0, 1\}$. 
+Při každé iteraci se vypočte podmnožina kartézského součinu $K_i \subseteq S_{d_i} \times R_i$, kde $(s, r) \in K_i$ a dva nejpravější symboly řetězce $s$ jsou stejné jako dva nejlevější symboly řetězce $r$, tzn. $s_1.s_0 = r_{i+1}.r_{i}$.
+Z vybraných n-tic se vytvoří nová množina $R_{i+1} = \{s_3.r\ |\ (s, r) \in K_i\}$, kde se nejlevější symbol $s_3$ zřetězí s~řetězcem $r$. 
+Počáteční množina $R_0$ je zvolena právě tak, aby $R_1 = K_0$.
+
+V poslední iteraci bude množina $R_N$ obsahovat všechny možné kombinace, při kterých po aplikaci substituce získáme vstupní řetězec $d$. Operace substituce pracuje s~cyklickým bufferem a porovnají se vždy 3~symboly, tudíž musí být dva nejlevější symboly rovny dvěma nejpravějším symbolům. Pokud byla použita platná substituce, tak tomuto kritériu bude odpovídat právě jedno řešení $y \in R_N$.  Hledaný řetězec potom odpovídá $x = y_{N+1}.y_N. \cdots .y_2.y_1$, jelikož před substitucí byla provedena operace rotace doleva o jeden symbol. Řetězec $x$ odpovídá binární reprezentaci předcházející posloupnosti proudového klíče $C(K)$.
+
+
+\subsection{SAT solver}
+
+Nalezená substituce lze chápat jako logická funkce o třech proměnných. Tato funkce lze jednoduše vyjádřit pomocí CNF. Pro každou sousedící trojici bitů (nejvyšší bit sousedí s nejnižším) se sestrojí rovnice v CNF, jejíž výsledek odpovídá zvolené nalezené substituci. V těchto rovnicích se již počítá s počáteční rotací $N$ bitů vstupního $C(K)$.
+
+\emph{SAT solver} následně hledá kombinaci vstupních $N$ proměnných tak, aby výsledky všech rovnic odpovídaly hodnotě bitu v $C(K)$, na který byla trojice substituována. Vztahy \ref{eq:p1}, \ref{eq:p2}, \ref{eq:p4}, \ref{eq:p6} a \ref{eq:SAT} znázorňují soustavu rovnic a~predikátů pro substituci \texttt{SUB = [0, 1, 1, 0, 1, 0, 1, 0]}.
+
+\begin{align}\label{eq:p1}
+	p_1(i) &\equiv x_{i+1\bmod N} \wedge \neg x_{i+2\bmod N}  \wedge \neg x_{i+3\bmod N} \\\label{eq:p2}
+	p_2(i) &\equiv \neg x_{i+1\bmod N} \wedge x_{i+2\bmod N}  \wedge \neg x_{i+3\bmod N} \\\label{eq:p4}
+	p_4(i) &\equiv \neg x_{i+1\bmod N} \wedge \neg x_{i+2\bmod N}  \wedge x_{i+3\bmod N} \\\label{eq:p6}
+	p_6(i) &\equiv \neg x_{i+1\bmod N} \wedge x_{i+2\bmod N}  \wedge x_{i+3\bmod N}
+\end{align}
+\begin{equation}\label{eq:SAT}
+\bigwedge_{i=0}^{N-1} p_1(i) \vee p_2(i) \vee p_4(i) \vee p_6(i) = d_i
+\end{equation}
+
+V implementaci byla zvolena množina proměnných typu \texttt{Bool}, kde každá proměnná reprezentuje jeden bit, místo typu \texttt{VecBit} reprezentující celé číslo. Řešení s použitím \texttt{VecBit} bylo časově náročnější než použití množiny proměnných.
+
+\section{Závěr}
+
+V rámci projektu byla provedena analýza zadaných souborů, která vedla k odhalení použitého tajného klíče \uv{KRY\{xondre09-28ff1748ad3563d\}}. K tomu bylo využito: únik nezašifrovaného textu, opakované použití stejného tajného klíče a znalost použitého algoritmu. 
+
+Řešení postupně ze zadaných souborů naleznou generovaný proudový klíč a použitou substituci při jeho generování. Při ručním řešení je vytvořen algoritmus, který provádí reverzní substituci a v druhém řešení se sestaví rovnice, které následně vyřeší \emph{SAT solver}. Čas pro nalezení tajného klíče trvá na procesoru Intel Core i7-4810MQ CPU 2.80GHz pro \emph{SAT solver} 5 vteřin a pro ruční řešení téměř okamžitě.
+
+
+\end{document}  
+

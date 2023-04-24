@@ -1,0 +1,51 @@
+name:                formula2bdd
+version:             0.1.0.0
+git:                "https://gitlab.com/xondre09/formula-2-bdd"
+license:             MIT
+author:              "Karel Ondřej"
+maintainer:          "xondre09@stud.fit.vutbr.cz"
+copyright:           "2019 Karel Ondřej"
+
+extra-source-files:
+- README.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+
+executables:
+  formula-2-bdd:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - formula2bdd
+
+tests:
+  formula-2-bdd-test:
+    main:                Spec.hs
+    source-dirs:
+    - test
+    - app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - formula2bdd
+    - HTF == 0.13.*
+    - containers

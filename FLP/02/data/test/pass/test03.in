@@ -1,0 +1,12 @@
+S   P R
+P x P R
+P y Q R
+Q y Q R
+Q   R L
+R x S  
+R y S  
+R   T R
+S   R L
+T   U y
+U y F L
+ xxy

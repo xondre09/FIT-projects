@@ -1,0 +1,62 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+
+	<file alias="ace_of_clubs.png">../cards/ace_of_clubs.png</file>
+	<file alias="2_of_clubs.png">../cards/2_of_clubs.png</file>
+	<file alias="3_of_clubs.png">../cards/3_of_clubs.png</file>
+	<file alias="4_of_clubs.png">../cards/4_of_clubs.png</file>
+	<file alias="5_of_clubs.png">../cards/5_of_clubs.png</file>
+	<file alias="6_of_clubs.png">../cards/6_of_clubs.png</file>
+	<file alias="7_of_clubs.png">../cards/7_of_clubs.png</file>
+	<file alias="8_of_clubs.png">../cards/8_of_clubs.png</file>
+	<file alias="9_of_clubs.png">../cards/9_of_clubs.png</file>
+	<file alias="10_of_clubs.png">../cards/10_of_clubs.png</file>
+	<file alias="jack_of_clubs.png">../cards/jack_of_clubs.png</file>
+	<file alias="queen_of_clubs.png">../cards/queen_of_clubs.png</file>
+	<file alias="king_of_clubs.png">../cards/king_of_clubs.png</file>
+	<file alias="ace_of_spades.png">../cards/ace_of_spades.png</file>
+	<file alias="2_of_spades.png">../cards/2_of_spades.png</file>
+	<file alias="3_of_spades.png">../cards/3_of_spades.png</file>
+	<file alias="4_of_spades.png">../cards/4_of_spades.png</file>
+	<file alias="5_of_spades.png">../cards/5_of_spades.png</file>
+	<file alias="6_of_spades.png">../cards/6_of_spades.png</file>
+	<file alias="7_of_spades.png">../cards/7_of_spades.png</file>
+	<file alias="8_of_spades.png">../cards/8_of_spades.png</file>
+	<file alias="9_of_spades.png">../cards/9_of_spades.png</file>
+	<file alias="10_of_spades.png">../cards/10_of_spades.png</file>
+	<file alias="jack_of_spades.png">../cards/jack_of_spades.png</file>
+	<file alias="queen_of_spades.png">../cards/queen_of_spades.png</file>
+	<file alias="king_of_spades.png">../cards/king_of_spades.png</file>
+	<file alias="ace_of_diamonds.png">../cards/ace_of_diamonds.png</file>
+	<file alias="2_of_diamonds.png">../cards/2_of_diamonds.png</file>
+	<file alias="3_of_diamonds.png">../cards/3_of_diamonds.png</file>
+	<file alias="4_of_diamonds.png">../cards/4_of_diamonds.png</file>
+	<file alias="5_of_diamonds.png">../cards/5_of_diamonds.png</file>
+	<file alias="6_of_diamonds.png">../cards/6_of_diamonds.png</file>
+	<file alias="7_of_diamonds.png">../cards/7_of_diamonds.png</file>
+	<file alias="8_of_diamonds.png">../cards/8_of_diamonds.png</file>
+	<file alias="9_of_diamonds.png">../cards/9_of_diamonds.png</file>
+	<file alias="10_of_diamonds.png">../cards/10_of_diamonds.png</file>
+	<file alias="jack_of_diamonds.png">../cards/jack_of_diamonds.png</file>
+	<file alias="queen_of_diamonds.png">../cards/queen_of_diamonds.png</file>
+	<file alias="king_of_diamonds.png">../cards/king_of_diamonds.png</file>
+	<file alias="ace_of_hearts.png">../cards/ace_of_hearts.png</file>
+	<file alias="2_of_hearts.png">../cards/2_of_hearts.png</file>
+	<file alias="3_of_hearts.png">../cards/3_of_hearts.png</file>
+	<file alias="4_of_hearts.png">../cards/4_of_hearts.png</file>
+	<file alias="5_of_hearts.png">../cards/5_of_hearts.png</file>
+	<file alias="6_of_hearts.png">../cards/6_of_hearts.png</file>
+	<file alias="7_of_hearts.png">../cards/7_of_hearts.png</file>
+	<file alias="8_of_hearts.png">../cards/8_of_hearts.png</file>
+	<file alias="9_of_hearts.png">../cards/9_of_hearts.png</file>
+	<file alias="10_of_hearts.png">../cards/10_of_hearts.png</file>
+	<file alias="jack_of_hearts.png">../cards/jack_of_hearts.png</file>
+	<file alias="queen_of_hearts.png">../cards/queen_of_hearts.png</file>
+	<file alias="king_of_hearts.png">../cards/king_of_hearts.png</file>
+
+
+    <file alias="empty_card.png">../cards/empty_card.png</file>
+	<file alias="last_card.png">../cards/last_card.png</file>
+	<file alias="back_side.png">../cards/back_side.png</file>
+</qresource>
+</RCC>
